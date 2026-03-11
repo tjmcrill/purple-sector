@@ -48,3 +48,7 @@ create index if not exists lap_times_circuit_season_idx
 alter table public.circuits enable row level security;
 alter table public.drivers enable row level security;
 alter table public.lap_times enable row level security;
+
+create policy "Allow public read access" on public.circuits for select using (true);
+create policy "Allow public read access" on public.drivers for select using (true);
+create policy "Allow public read access" on public.lap_times for select using (true);

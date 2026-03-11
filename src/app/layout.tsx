@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "F1 Lap Time Duel",
+  title: "Purple Sector",
   description: "Head-to-head qualifying lap comparisons across F1 circuits and seasons.",
 };
 
