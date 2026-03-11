@@ -51,7 +51,7 @@ export function DuelApp() {
         setDrivers(driverData);
         setSelectedCircuitId(circuitData[0]?.circuit_id ?? "");
         const findDriver = (id: string) => driverData.find((d) => d.driver_id === id);
-        setSelectedDriverA(findDriver("max_verstappen")?.driver_id ?? driverData[0]?.driver_id ?? "");
+        setSelectedDriverA(findDriver("norris")?.driver_id ?? driverData[0]?.driver_id ?? "");
         setSelectedDriverB(findDriver("leclerc")?.driver_id ?? driverData[1]?.driver_id ?? "");
       } catch (bootstrapError) {
         if (!cancelled) {
