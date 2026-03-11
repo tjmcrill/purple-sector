@@ -81,7 +81,7 @@ export function SearchSelect({
             setQuery(event.target.value);
             setOpen(true);
           }}
-          className="w-full rounded-[15px] bg-[#131313] px-4 py-3 text-sm text-[#f5f5f5] outline-none placeholder:text-[#666666] disabled:cursor-not-allowed disabled:opacity-60"
+          className="w-full rounded-[15px] bg-[#131313] px-4 py-3 text-base text-[#f5f5f5] outline-none placeholder:text-[#666666] disabled:cursor-not-allowed disabled:opacity-60 sm:text-sm"
         />
       </div>
       {open && !disabled && filteredOptions.length > 0 ? (

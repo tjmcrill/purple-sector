@@ -236,7 +236,7 @@ export function TeammatePage() {
             <select
               value={selectedSeason}
               onChange={(event) => setSelectedSeason(event.target.value)}
-              className="w-full appearance-none rounded-2xl border border-[#2a2a2a] bg-[#131313] px-4 py-3 text-sm text-[#f5f5f5] outline-none"
+              className="w-full appearance-none rounded-2xl border border-[#2a2a2a] bg-[#131313] px-4 py-3 text-base text-[#f5f5f5] outline-none sm:text-sm"
             >
               <option value="">All</option>
               {(selectedTeammate?.seasons ?? []).map((season) => (
