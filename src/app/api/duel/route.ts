@@ -20,6 +20,8 @@ export async function GET(request: NextRequest) {
   const driverAId = searchParams.get("driverA");
   const driverBId = searchParams.get("driverB");
   const seasonRaw = searchParams.get("season");
+  const driverASeasonRaw = searchParams.get("driverASeason");
+  const driverBSeasonRaw = searchParams.get("driverBSeason");
 
   if (!circuitId || !driverAId || !driverBId) {
     return NextResponse.json(
@@ -40,6 +42,8 @@ export async function GET(request: NextRequest) {
   }
 
   const season = seasonRaw ? Number(seasonRaw) : null;
+  const driverASeason = driverASeasonRaw ? Number(driverASeasonRaw) : season;
+  const driverBSeason = driverBSeasonRaw ? Number(driverBSeasonRaw) : season;
   if (
     season !== null &&
     (!Number.isInteger(season) || season < 1950 || season > 2030)
@@ -50,11 +54,33 @@ export async function GET(request: NextRequest) {
     );
   }
 
+  if (
+    driverASeason !== null &&
+    (!Number.isInteger(driverASeason) || driverASeason < 1950 || driverASeason > 2030)
+  ) {
+    return NextResponse.json(
+      { error: "driverASeason must be an integer between 1950 and 2030" },
+      { status: 400 },
+    );
+  }
+
+  if (
+    driverBSeason !== null &&
+    (!Number.isInteger(driverBSeason) || driverBSeason < 1950 || driverBSeason > 2030)
+  ) {
+    return NextResponse.json(
+      { error: "driverBSeason must be an integer between 1950 and 2030" },
+      { status: 400 },
+    );
+  }
+
   const duel = await getDuelData({
     circuitId,
     driverAId,
     driverBId,
     season,
+    driverASeason,
+    driverBSeason,
   });
 
   if (!duel) {

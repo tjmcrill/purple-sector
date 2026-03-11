@@ -2,6 +2,7 @@ import "server-only";
 
 import { fetchJolpica } from "@/lib/api/jolpica";
 import { backfillCircuitSeason, enrichCircuitSeason } from "@/lib/server/backfill";
+import { ensureWeatherCached } from "@/lib/server/weather";
 import { createSupabaseAdminClient } from "@/lib/supabase/admin";
 
 type JolpicaRaceScheduleResponse = {
@@ -36,6 +37,7 @@ type SyncResult = {
   race: LatestRaceSummary;
   lapRows: number;
   sectorRows: number;
+  weatherCached: boolean;
 };
 
 function parseRaceDate(date: string, time?: string) {
@@ -96,6 +98,8 @@ export async function syncLatestCompletedRace() {
     await enrichCircuitSeason(race.circuitId, race.season);
   }
 
+  const weather = race.season >= 2023 ? await ensureWeatherCached(race.circuitId, race.season) : null;
+
   const supabase = createSupabaseAdminClient();
   const { count: lapRows, error: lapError } = await supabase
     .from("lap_times")
@@ -122,5 +126,6 @@ export async function syncLatestCompletedRace() {
     race,
     lapRows: lapRows ?? 0,
     sectorRows: sectorRows ?? 0,
+    weatherCached: weather !== null,
   } satisfies SyncResult;
 }

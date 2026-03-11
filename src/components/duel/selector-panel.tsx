@@ -18,11 +18,13 @@ type SelectorPanelProps = {
   selectedSeason: string;
   duel: DuelResponse | null;
   loading: boolean;
+  randomLoading: boolean;
   onCircuitChange: (value: string) => void;
   onDriverAChange: (value: string) => void;
   onDriverBChange: (value: string) => void;
   onSeasonChange: (value: string) => void;
   onSubmit: () => void;
+  onRandomDuel: () => void;
 };
 
 export function SelectorPanel({
@@ -34,11 +36,13 @@ export function SelectorPanel({
   selectedSeason,
   duel,
   loading,
+  randomLoading,
   onCircuitChange,
   onDriverAChange,
   onDriverBChange,
   onSeasonChange,
   onSubmit,
+  onRandomDuel,
 }: SelectorPanelProps) {
   const circuitOptions = circuits.map((circuit) => ({
     value: circuit.circuit_id,
@@ -54,10 +58,11 @@ export function SelectorPanel({
 
   const driverAColors = getTeamColors(duel?.driverA.team ?? "Mercedes");
   const driverBColors = getTeamColors(duel?.driverB.team ?? "Ferrari");
+  const busy = loading || randomLoading;
 
   return (
     <section className="relative rounded-2xl border border-[#2a2a2a] bg-[#111111] p-3 shadow-lg sm:rounded-[24px] sm:p-4">
-      <div className="grid items-end gap-3 sm:grid-cols-[1fr_1fr_1fr_100px_auto]">
+      <div className="grid items-end gap-3 lg:grid-cols-[1fr_1fr_1fr_100px_168px]">
         <SearchSelect
           label="Driver A"
           placeholder="Search driver"
@@ -98,18 +103,24 @@ export function SelectorPanel({
             ))}
           </select>
         </div>
-        <button
-          type="button"
-          onClick={onSubmit}
-          disabled={loading}
-          className="flex h-[46px] w-[80px] items-center justify-center self-end rounded-xl border border-[#ff2d20] bg-[#ff2d20]/10 text-[11px] font-bold tracking-[0.2em] text-[#ff2d20] transition hover:bg-[#ff2d20]/20 disabled:cursor-wait disabled:opacity-70"
-        >
-          {loading ? (
-            <span className="start-spinner" />
-          ) : (
-            "START"
-          )}
-        </button>
+        <div className="grid gap-2">
+          <button
+            type="button"
+            onClick={onSubmit}
+            disabled={busy}
+            className="flex h-[46px] w-full items-center justify-center self-end rounded-xl border border-[#ff2d20] bg-[#ff2d20]/10 text-[11px] font-bold tracking-[0.2em] text-[#ff2d20] transition hover:bg-[#ff2d20]/20 disabled:cursor-wait disabled:opacity-70"
+          >
+            {loading ? <span className="start-spinner" /> : "START"}
+          </button>
+          <button
+            type="button"
+            onClick={onRandomDuel}
+            disabled={busy}
+            className="h-[42px] rounded-xl border border-[#2f2f2f] bg-[#161616] px-4 text-[11px] font-semibold tracking-[0.18em] text-[#d5d5d5] transition hover:border-[#444444] hover:bg-[#1b1b1b] disabled:cursor-wait disabled:opacity-70"
+          >
+            {randomLoading ? "LOADING…" : "SURPRISE ME"}
+          </button>
+        </div>
       </div>
       <p className="mt-2 text-center text-[10px] tracking-wide text-[#555555]">
         Qualifying data from 2021–2026

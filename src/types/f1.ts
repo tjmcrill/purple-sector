@@ -30,6 +30,81 @@ export type LapTimeRecord = {
   sector_3_ms: number | null;
 };
 
+export type WeatherConditions = {
+  airTempC: number;
+  trackTempC: number;
+  humidityPct: number;
+  windSpeedMs: number;
+  windDirectionDeg: number;
+  rainfall: boolean;
+  pressureMbar: number | null;
+  sampledAt: string | null;
+};
+
+export type EvolutionEntry = {
+  season: number;
+  driverId: string;
+  driverName: string;
+  team: string;
+  lapTimeMs: number;
+  lapTimeDisplay: string;
+};
+
+export type EvolutionResponse = {
+  circuitId: string;
+  circuitName: string;
+  entries: EvolutionEntry[];
+};
+
+export type RandomDuelPick = {
+  circuitId: string;
+  driverA: string;
+  driverB: string;
+  season: number;
+  gapMs: number;
+};
+
+export type TeammateOption = {
+  driverId: string;
+  driverName: string;
+  team: string;
+  seasons: number[];
+};
+
+export type TeammateBattleRound = {
+  circuitId: string;
+  circuitName: string;
+  countryCode: string;
+  season: number;
+  team: string;
+  driverATimeMs: number;
+  driverADisplay: string;
+  driverBTimeMs: number;
+  driverBDisplay: string;
+  gapMs: number;
+  winnerId: string;
+};
+
+export type TeammateBattleResult = {
+  driverA: {
+    driverId: string;
+    driverName: string;
+    wins: number;
+    avgGapMs: number;
+  };
+  driverB: {
+    driverId: string;
+    driverName: string;
+    wins: number;
+    avgGapMs: number;
+  };
+  team: string;
+  teams: string[];
+  season: number | null;
+  averageGapMs: number;
+  rounds: TeammateBattleRound[];
+};
+
 export type DuelResponse = {
   circuit: CircuitMetadata;
   selectedSeason: number | null;
@@ -39,4 +114,5 @@ export type DuelResponse = {
   leaderboardTop10: LapTimeRecord[];
   circuitRecord: LapTimeRecord | null;
   sectorDataAvailable: boolean;
+  weather: WeatherConditions | null;
 };

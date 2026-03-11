@@ -269,13 +269,38 @@ export async function ensureCircuitBackfilled(circuitId: string) {
   await backfillCircuitHistory(circuitId, { minSeason: 2021 });
 }
 
-export async function enrichCircuitSeason(circuitId: string, season: number) {
+export async function resolveQualifyingSession(circuitId: string, season: number) {
   if (season < 2023) {
-    return;
+    return null;
   }
 
   const circuitConfig = CURRENT_CIRCUIT_ASSET_MAP[circuitId];
   if (!circuitConfig?.openF1CircuitName) {
+    return null;
+  }
+
+  const sessions = await fetchOpenF1<OpenF1Session[]>(
+    `/sessions?year=${season}&session_name=Qualifying`,
+  );
+  const target = circuitConfig.openF1CircuitName.toLowerCase();
+
+  return (
+    sessions.find((session) => {
+      const shortName = session.circuit_short_name.toLowerCase();
+      const location = session.location?.toLowerCase();
+      return (
+        shortName === target ||
+        shortName.includes(target) ||
+        target.includes(shortName) ||
+        location === target ||
+        location?.includes(target)
+      );
+    }) ?? null
+  );
+}
+
+export async function enrichCircuitSeason(circuitId: string, season: number) {
+  if (season < 2023) {
     return;
   }
 
@@ -292,22 +317,7 @@ export async function enrichCircuitSeason(circuitId: string, season: number) {
     return;
   }
 
-  const sessions = await fetchOpenF1<OpenF1Session[]>(
-    `/sessions?year=${season}&session_name=Qualifying`,
-  );
-  const matchingSession = sessions.find((session) => {
-    const shortName = session.circuit_short_name.toLowerCase();
-    const location = session.location?.toLowerCase();
-    const target = circuitConfig.openF1CircuitName?.toLowerCase() ?? "";
-    return (
-      shortName === target ||
-      shortName.includes(target) ||
-      target.includes(shortName) ||
-      location === target ||
-      location?.includes(target)
-    );
-  });
-
+  const matchingSession = await resolveQualifyingSession(circuitId, season);
   if (!matchingSession) {
     return;
   }

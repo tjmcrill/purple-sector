@@ -62,7 +62,8 @@ export function TrackMap({ duel, drivers }: { duel: DuelResponse; drivers: Drive
   const fasterLap = Math.min(duel.driverA.lap_time_ms, duel.driverB.lap_time_ms);
   const slowerLap = Math.max(duel.driverA.lap_time_ms, duel.driverB.lap_time_ms);
   const totalDurationMs = slowerLap;
-  const duelKey = `${duel.circuit.circuit_id}-${duel.driverA.driver_id}-${duel.driverB.driver_id}-${duel.selectedSeason ?? "all"}`;
+  const duelKey = `${duel.circuit.circuit_id}-${duel.driverA.driver_id}-${duel.driverA.season}-${duel.driverB.driver_id}-${duel.driverB.season}-${duel.selectedSeason ?? "all"}`;
+  const crossSeason = duel.driverA.season !== duel.driverB.season;
 
   const startLine = useMemo(() => {
     const path = pathRef.current;
@@ -155,7 +156,9 @@ export function TrackMap({ duel, drivers }: { duel: DuelResponse; drivers: Drive
           <p className="mt-1 text-sm text-[#888888]">
             {duel.circuit.name}
             {" · "}
-            {duel.bestAcrossSeasons
+            {crossSeason
+              ? `${duel.driverA.season} pole lap vs ${duel.driverB.season} circuit record`
+              : duel.bestAcrossSeasons
               ? "Best qualifying lap across cached seasons"
               : `Season ${duel.selectedSeason} qualifying duel`}
           </p>

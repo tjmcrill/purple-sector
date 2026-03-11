@@ -15,6 +15,7 @@ type SearchSelectProps = {
   options: SearchOption[];
   value: string;
   accentColor?: string;
+  disabled?: boolean;
   onChange: (value: string) => void;
 };
 
@@ -24,6 +25,7 @@ export function SearchSelect({
   options,
   value,
   accentColor = "#2a2a2a",
+  disabled = false,
   onChange,
 }: SearchSelectProps) {
   const selectedOption = options.find((option) => option.value === value) ?? null;
@@ -56,9 +58,13 @@ export function SearchSelect({
         style={{ boxShadow: `inset 0 0 0 1px ${accentColor}22` }}
       >
         <input
+          disabled={disabled}
           value={displayValue}
           placeholder={placeholder}
           onFocus={() => {
+            if (disabled) {
+              return;
+            }
             setQuery(selectedOption?.label ?? "");
             setOpen(true);
           }}
@@ -69,13 +75,16 @@ export function SearchSelect({
             }, 100);
           }}
           onChange={(event) => {
+            if (disabled) {
+              return;
+            }
             setQuery(event.target.value);
             setOpen(true);
           }}
-          className="w-full rounded-[15px] bg-[#131313] px-4 py-3 text-sm text-[#f5f5f5] outline-none placeholder:text-[#666666]"
+          className="w-full rounded-[15px] bg-[#131313] px-4 py-3 text-sm text-[#f5f5f5] outline-none placeholder:text-[#666666] disabled:cursor-not-allowed disabled:opacity-60"
         />
       </div>
-      {open && filteredOptions.length > 0 ? (
+      {open && !disabled && filteredOptions.length > 0 ? (
         <div className="absolute z-50 mt-2 max-h-72 w-full overflow-y-auto rounded-2xl border border-[#2a2a2a] bg-[#111111] shadow-2xl shadow-black/40">
           {filteredOptions.map((option) => (
             <button
