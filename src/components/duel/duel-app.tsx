@@ -214,7 +214,9 @@ export function DuelApp() {
     setError(null);
 
     try {
-      const response = await fetch("/api/random-duel?mode=random");
+      const response = await fetch(`/api/random-duel?mode=random&t=${Date.now()}`, {
+        cache: "no-store",
+      });
       if (!response.ok) {
         const payload = (await response.json().catch(() => null)) as
           | { error?: string }

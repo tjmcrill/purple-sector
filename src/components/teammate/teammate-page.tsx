@@ -114,8 +114,7 @@ export function TeammatePage() {
         }));
 
         setTeammates(nextTeammates);
-        const nextSelection = nextTeammates[0]?.key ?? "";
-        setSelectedTeammateKey(nextSelection);
+        setSelectedTeammateKey("");
         setSelectedSeason("");
       } catch (teammatesError) {
         if (!cancelled) {

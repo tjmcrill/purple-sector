@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { rateLimit } from "@/lib/rate-limit";
 import { getRandomDuel } from "@/lib/server/queries";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: NextRequest) {
   const ip =
     request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
@@ -33,7 +35,10 @@ export async function GET(request: NextRequest) {
 
   return NextResponse.json(pick, {
     headers: {
-      "Cache-Control": "s-maxage=300, stale-while-revalidate=3600",
+      "Cache-Control":
+        mode === "dotd"
+          ? "s-maxage=300, stale-while-revalidate=3600"
+          : "no-store, max-age=0",
     },
   });
 }
