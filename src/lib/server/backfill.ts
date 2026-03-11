@@ -279,6 +279,19 @@ export async function enrichCircuitSeason(circuitId: string, season: number) {
     return;
   }
 
+  // Skip enrichment if sector data already exists for this circuit+season
+  const supabaseEarly = createSupabaseAdminClient();
+  const { count: sectorCount, error: sectorError } = await supabaseEarly
+    .from("lap_times")
+    .select("id", { count: "exact", head: true })
+    .eq("circuit_id", circuitId)
+    .eq("season", season)
+    .not("sector_1_ms", "is", null);
+
+  if (!sectorError && (sectorCount ?? 0) > 0) {
+    return;
+  }
+
   const sessions = await fetchOpenF1<OpenF1Session[]>(
     `/sessions?year=${season}&session_name=Qualifying`,
   );
